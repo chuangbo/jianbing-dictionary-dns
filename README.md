@@ -86,7 +86,7 @@
    1. 为 `ns1.youdomain.com` 添加一个 A 记录，指向你的服务器地址
    1. 添加一个DNS泛解析，在 `*.yourdomain.com` 添加 NS 记录指向 `ns1.yourdomain.com`
    1. 修改上一步的那几行，去掉 `@localhost`，将 `jianbing.org` 改为 `yourdomain.com`
-   
+
 
 1. 验证上一步
 
