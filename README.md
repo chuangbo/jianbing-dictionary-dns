@@ -72,3 +72,17 @@
         $ ./jianbing-dns.py
 
 1. 如果需要管理进程，请使用 supervisor
+
+1. 本机测试，在 ~/.bashrc 的末尾添加下面几行
+
+        # jianbing.org on DNS
+        function j {
+            dig "$*.jianbing.org" +short txt @localhost | perl -pe's/\\(\d{1,3})/chr $1/eg; s/(^"|"$)//g'
+        }
+
+
+1. 部署到外网，修改解析（可选）
+
+   1. 在 ns1.youdomain.com 添加一个 A 记录，指向你的服务器地址
+   1. 添加一个DNS泛解析，在 *.yourdomain.com 添加 NS 记录指向 ns1.yourdomain.com
+   1. 修改上一步的那几行，去掉 @localhost，将 jianbing.org 改为 yourdomain.com
