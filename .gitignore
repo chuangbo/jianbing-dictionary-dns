@@ -1,0 +1,41 @@
+*.log
+.DS_Store
+log/*
+
+*.py[cod]
+
+# C extensions
+*.so
+
+# Installer logs
+pip-log.txt
+
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+
+# SublimeText project files
+/*.sublime-project
+*.sublime-workspace
+
+# TextMate
+*.tmproj
+*.tmproject
+tmtags
+
+.DS_Store
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+.*
+!.gitignore
+*~
+
+myenv
+env
