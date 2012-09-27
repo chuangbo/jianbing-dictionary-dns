@@ -18,8 +18,11 @@ var word_idx = make(map[string]string)
 
 func PrepareIndex() {
     idx_data, err := ioutil.ReadFile(base + ".idx")
-    dict_data, _ := os.Open(base + ".dict")
+    if err != nil {
+        fmt.Printf("Failed to open the dictionary: %s\n", err.Error())
+    }
 
+    dict_data, err := os.Open(base + ".dict")
     if err != nil {
         fmt.Printf("Failed to open the dictionary: %s\n", err.Error())
     }

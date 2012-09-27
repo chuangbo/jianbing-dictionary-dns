@@ -66,6 +66,8 @@
         $ #（因为比较难下载到，仓库里提供了一个压缩包
         $ # 如果你不是用的这个，需要修改 stardict.py 里的配置
         $ tar xvf stardict-lazyworm-ec-2.4.2.tar.bz2
+        $ cd stardict-lazyworm-ec-2.4.2
+        $ gunzip -S '.dz' lazyworm-ec.dict.dz
 
 1. 运行
 
