@@ -69,7 +69,7 @@
 
 1. 运行
 
-        $ ./jianbing-dns.py
+        $ sudo ./jianbing-dns.py
 
 1. 如果需要管理进程，请使用 supervisor
 
@@ -91,3 +91,13 @@
 1. 验证上一步
 
         $ dig +trace apple.yourdomain.com
+
+
+## The Go Language Version
+1. 新增了 Go 版本，没有全面测试，速度应该是比 python 快一些
+
+        $ mkdir your-local-go-location
+        $ cd your-local-go-location
+        $ export GOPATH=/path/to/your-local-go-location
+        $ go get github.com/chuangbo/jianbing-dictionary-dns/golang/jianbing-dns
+        $ sudo ./bin/jianbing-dns
