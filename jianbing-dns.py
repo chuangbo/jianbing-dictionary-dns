@@ -3,23 +3,22 @@
 
 import struct
 
-import dns.message
-import dns.renderer
-import dns.flags
-import dns.rdtypes.txtbase
+import dnslib
 
 from gevent.server import StreamServer, DatagramServer
 
 import stardict
 
 def make_jianbing(query):
-    response = dns.message.make_response(query)
-    response.flags |= dns.flags.AA
-    word = query.question[0].name.labels[0]
+    response = query.reply()
+    word = query.q.qname.label[0]
     desc = stardict.check(word) or 'No such word %s' % word
-    # desc.replace(';', '\;')
-    # desc = ' '.join(desc.splitlines())
-    response.answer.append(dns.rrset.from_rdata(query.question[0].name, 5, dns.rdtypes.txtbase.TXTBase(dns.rdataclass.IN, dns.rdatatype.TXT, desc)))
+    # force change rtype to TXT
+    response.a.rtype = dnslib.QTYPE.TXT
+    response.a.rdata = dnslib.TXT(desc)
+    response.a.ttl = 5
+    # no Recursion Available
+    response.header.ra = 0
     return response
 
 class UdpJianbingServer(DatagramServer):
@@ -27,15 +26,16 @@ class UdpJianbingServer(DatagramServer):
     def handle(self, data, address):
         # print '%s: got %r' % (address[0], data)
 
-        query = dns.message.from_wire(data)
+        query = dnslib.DNSRecord.parse(data)
 
         # print query
         response = make_jianbing(query)
-        wire = response.to_wire()
+        wire = response.pack()
         if len(wire) >= 512:
-            response.answer = []
-            response.flags |= dns.flags.TC
-            wire = response.to_wire()
+            response.rr = []
+            response.header.a = 0
+            response.header.tc = 1
+            wire = response.pack()
         self.socket.sendto(wire, address)
 
 
@@ -50,11 +50,11 @@ class TcpJianbingServer(StreamServer):
 
         data = fileobj.read(l)
         # print '%r' % data
-        query = dns.message.from_wire(data)
+        query = dnslib.DNSRecord.parse(data)
 
         # print query
         response = make_jianbing(query)
-        wire = response.to_wire()
+        wire = response.pack()
         wire = struct.pack('!H', len(wire)) + wire
         fileobj.write(wire)
         fileobj.flush()

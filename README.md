@@ -69,7 +69,7 @@
     ```sh
     $ virtualenv env
     $ . ./env/bin/activate
-    $ pip install dnspython
+    $ pip install dnslib
     $ pip install gevent
     ```
 
