@@ -10,20 +10,29 @@ from gevent.server import StreamServer, DatagramServer
 import stardict
 
 def notfound(word):
-    s = "No word '%s' found, did you mean:\n" % word
-    s += '\n'.join( " %d. %s %s" % (i+1, w, stardict.check(w).replace('\n', ' ')) for i, w in enumerate(stardict.get_close_matches(word)) )
-    return s
+    yield "No word '%s' found, did you mean:" % word
+    for i, w in enumerate(stardict.get_close_matches(word)):
+        yield " %d. %s %s" % (i+1, w, stardict.check(w).replace('\n', ' '))
+
+def split_len(seq, length):
+    for i in xrange(0, len(seq), length):
+        yield seq[i:i+length]
 
 def make_jianbing(query):
     response = query.reply()
-    word = query.q.qname.label[0]
-    desc = stardict.check(word) or notfound(word)
-    # force change rtype to TXT
-    response.a.rtype = dnslib.QTYPE.TXT
-    response.a.rdata = dnslib.TXT(desc)
-    response.a.ttl = 5
-    # no Recursion Available
     response.header.ra = 0
+    word = query.q.qname.label[0]
+    desc = stardict.check(word)
+    desc = [desc] if desc else notfound(word)
+    # force change rtype to TXT
+    response.rr = []
+
+    for txt in desc:
+        # if len(txt) > 255
+        for part in split_len(txt, 255):
+            response.add_answer(dnslib.RR(query.q.qname, dnslib.QTYPE.TXT, rdata=dnslib.TXT(part), ttl=5))
+
+    # no Recursion Available
     return response
 
 class UdpJianbingServer(DatagramServer):
