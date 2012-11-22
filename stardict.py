@@ -1,6 +1,9 @@
 import sys
 import os
 import struct
+import difflib
+# Monkey patching
+import StringMatcher; difflib.SequenceMatcher = StringMatcher.StringMatcher
 
 
 DICT = os.path.abspath(os.path.join(os.path.dirname(__file__), 'stardict-lazyworm-ec-2.4.2/lazyworm-ec'))
@@ -31,3 +34,6 @@ prepare()
 
 def check(word):
     return word_idx.get(word)
+
+def get_close_matches(word):
+    return difflib.get_close_matches(word, word_idx.iterkeys())

@@ -39,6 +39,15 @@
     n.
     弗兰克（男子名）
     ```
+1. 模糊查找
+
+    ```sh
+    $ j appe
+    No word 'appe' found, did you mean:
+     1. nappe [næp] n. 越过水坝落下的水, 叠层结构, 等分半圆锥
+     2. apple ['æpl] n. 苹果, 似苹果的果实
+     3. appel [ә'pel] n. 灵快的踏足, 垫步
+    ```
 
 ## Usage
 
@@ -69,8 +78,9 @@
     ```sh
     $ virtualenv env
     $ . ./env/bin/activate
-    $ pip install dnslib
-    $ pip install gevent
+    $ pip install dnslib # easy & fast than dnspython
+    $ pip install gevent # fastest network library
+    $ pip install python-Levenshtein # most similar match
     ```
 
 1. 下载星际译王词库
@@ -113,7 +123,9 @@
     $ dig +trace apple.yourdomain.com
     ```
 
-## The Go Language Version
+## Changelog
+
+### The Go Language Version - 2012-09-27
 1. 新增了 Go 版本，没有全面测试，速度应该是比 python 快一些
 
     ```sh
@@ -123,3 +135,6 @@
     $ go get github.com/chuangbo/jianbing-dictionary-dns/golang/jianbing-dns
     $ sudo ./bin/jianbing-dns
     ```
+
+### 增加模糊查找功能 - 2012-11-22
+使用了 [difflib.get_close_matches](http://docs.python.org/2/library/difflib.html#difflib.get_close_matches)，以及 https://github.com/miohtama/python-Levenshtein 进行算法加速

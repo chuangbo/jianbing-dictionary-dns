@@ -9,10 +9,15 @@ from gevent.server import StreamServer, DatagramServer
 
 import stardict
 
+def notfound(word):
+    s = "No word '%s' found, did you mean:\n" % word
+    s += '\n'.join( " %d. %s %s" % (i+1, w, stardict.check(w).replace('\n', ' ')) for i, w in enumerate(stardict.get_close_matches(word)) )
+    return s
+
 def make_jianbing(query):
     response = query.reply()
     word = query.q.qname.label[0]
-    desc = stardict.check(word) or 'No such word %s' % word
+    desc = stardict.check(word) or notfound(word)
     # force change rtype to TXT
     response.a.rtype = dnslib.QTYPE.TXT
     response.a.rdata = dnslib.TXT(desc)
