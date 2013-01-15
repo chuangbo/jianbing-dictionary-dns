@@ -9,14 +9,17 @@ from gevent.server import StreamServer, DatagramServer
 
 import stardict
 
+
 def notfound(word):
     yield "No word '%s' found, did you mean:" % word
     for i, w in enumerate(stardict.get_close_matches(word)):
         yield " %d. %s %s" % (i+1, w, stardict.check(w).replace('\n', ' '))
 
+
 def split_len(seq, length):
     for i in xrange(0, len(seq), length):
         yield seq[i:i+length]
+
 
 def make_jianbing(query):
     response = query.reply()
@@ -30,10 +33,13 @@ def make_jianbing(query):
     for txt in desc:
         # if len(txt) > 255
         for part in split_len(txt, 255):
-            response.add_answer(dnslib.RR(query.q.qname, dnslib.QTYPE.TXT, rdata=dnslib.TXT(part), ttl=5))
+            response.add_answer(
+                dnslib.RR(query.q.qname, dnslib.QTYPE.TXT,
+                          rdata=dnslib.TXT(part), ttl=5))
 
     # no Recursion Available
     return response
+
 
 class UdpJianbingServer(DatagramServer):
 
@@ -75,10 +81,9 @@ class TcpJianbingServer(StreamServer):
 
 
 if __name__ == '__main__':
-    print ('Already here')
+    print 'Already here'
     udpserver = UdpJianbingServer(':53')
     udpserver.start()
 
     tcpserver = TcpJianbingServer(':53')
     tcpserver.serve_forever()
-

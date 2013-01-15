@@ -1,15 +1,17 @@
-import sys
 import os
 import struct
 import difflib
 # Monkey patching
-import StringMatcher; difflib.SequenceMatcher = StringMatcher.StringMatcher
+import StringMatcher
+difflib.SequenceMatcher = StringMatcher.StringMatcher
 
 
-DICT = os.path.abspath(os.path.join(os.path.dirname(__file__), 'stardict-lazyworm-ec-2.4.2/lazyworm-ec'))
+DICT = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                       'stardict-lazyworm-ec-2.4.2/lazyworm-ec'))
 
 
 word_idx = dict()
+
 
 def prepare():
     idx_data = open(DICT+'.idx', 'r').read()
@@ -20,7 +22,9 @@ def prepare():
 
     while offset < idx_data_length:
         word_length = idx_data.find('\0', offset) - offset
-        (word, eof, word_offset, word_data_length) = struct.unpack_from('!%dssLL' % word_length, idx_data, offset)
+        (word, eof, word_offset, word_data_length) = \
+            struct.unpack_from('!%dssLL' % word_length, idx_data, offset)
+
         offset += len(word)+1+4+4
 
         # print word
@@ -32,8 +36,10 @@ def prepare():
 
 prepare()
 
+
 def check(word):
     return word_idx.get(word)
+
 
 def get_close_matches(word):
     return difflib.get_close_matches(word, word_idx.iterkeys())
