@@ -80,7 +80,7 @@
     $ . ./env/bin/activate
     $ pip install dnslib # easy & fast than dnspython
     $ pip install gevent # fastest network library
-    $ pip install python-Levenshtein # most similar match
+    $ apt-get install aspell # spelling check. or $ yum install aspell
     ```
 
 1. 下载星际译王词库
@@ -138,3 +138,9 @@
 
 ### 增加模糊查找功能 - 2012-11-22
 使用了 [difflib.get_close_matches](http://docs.python.org/2/library/difflib.html#difflib.get_close_matches)，以及 https://github.com/miohtama/python-Levenshtein 进行算法加速
+
+
+### 更换了模糊查找的实现 - 2013-01-15
+换成 aspell，速度提高几十倍。原来是遍历字典，使用最短路径算法匹配最相似单词，现在使用 aspell 检查拼写，应该是用了基于统计模型的拼写检查算法。可能只支持 Linux，我在 Mac 上测试出现了段错误。计划下一步加上 nose / mock 测试，以及 travis-ci。
+
+> 这里有徐宥老师翻译的文章，很值得一看 <http://blog.youxu.info/spell-correct.html>

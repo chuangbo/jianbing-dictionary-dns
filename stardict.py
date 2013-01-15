@@ -1,10 +1,7 @@
 import os
 import struct
-import difflib
-# Monkey patching
-import StringMatcher
-difflib.SequenceMatcher = StringMatcher.StringMatcher
-
+import pyaspell
+spellchecker = pyaspell.Aspell(("lang", "en"))
 
 DICT = os.path.abspath(os.path.join(os.path.dirname(__file__),
                        'stardict-lazyworm-ec-2.4.2/lazyworm-ec'))
@@ -42,4 +39,4 @@ def check(word):
 
 
 def get_close_matches(word):
-    return difflib.get_close_matches(word, word_idx.iterkeys())
+    return [w for w in spellchecker.suggest(word) if w in word_idx]

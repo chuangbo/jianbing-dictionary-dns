@@ -1,3 +1,2 @@
 dnslib
 gevent
-python-Levenshtein
